@@ -71,13 +71,13 @@ Chanchu's Drowsiness Detector is a web application that uses OpenCV and MediaPip
 
 ```
 /chanchu_drowsiness_detector
-|-- app.py               # Main Flask application
-|-- requirements.txt     # Python dependencies
+|-- app.py               
+|-- requirements.txt     
 |-- templates/
-|   |-- index.html       # HTML template for the web interface
+|   |-- index.html       
 |-- static/
-|   |-- style.css        # CSS for styling the web interface
-|-- buzzer.mp3           # Sound file for the alert
+|   |-- style.css       
+|-- buzzer.mp3          
 ```
 
 ## Dependencies
@@ -99,13 +99,6 @@ pip install -r requirements.txt
 
 This application is designed for monitoring drowsiness in real-time. It can be particularly useful for drivers, machine operators, or anyone needing to stay alert. The app will alert you visually and audibly if it detects that you're drowsy.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Contributions
-
-Contributions are welcome! Feel free to open an issue or submit a pull request with improvements.
 
 ## Acknowledgements
 
@@ -113,5 +106,3 @@ Contributions are welcome! Feel free to open an issue or submit a pull request w
 - [OpenCV](https://opencv.org/) - For handling webcam feed and image processing.
 - [Pygame](https://www.pygame.org/) - For playing the alert sound.
 ```
-
-### Save this as `README.md` in the root directory of your project.
