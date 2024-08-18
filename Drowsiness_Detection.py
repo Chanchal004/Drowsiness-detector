@@ -4,7 +4,6 @@ import mediapipe as mp
 import numpy as np
 from scipy.spatial import distance
 import pygame
-import threading
 import time
 
 app = Flask(__name__)
@@ -14,8 +13,6 @@ face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, min_
 mp_drawing = mp.solutions.drawing_utils
 
 thresh = 0.25
-frame_check = 20  # Assuming 20 frames per second
-flag = 0
 start_time = None
 
 def eye_aspect_ratio(eye):
@@ -31,7 +28,7 @@ def play_alert_sound():
     pygame.mixer.music.play()
 
 def detect_drowsiness(frame):
-    global flag, start_time
+    global start_time
 
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     result = face_mesh.process(rgb_frame)
@@ -39,21 +36,27 @@ def detect_drowsiness(frame):
     if result.multi_face_landmarks:
         for face_landmarks in result.multi_face_landmarks:
             left_eye = [
-                (face_landmarks.landmark[33].x * frame.shape[1], face_landmarks.landmark[33].y * frame.shape[0]),
-                (face_landmarks.landmark[160].x * frame.shape[1], face_landmarks.landmark[160].y * frame.shape[0]),
-                (face_landmarks.landmark[158].x * frame.shape[1], face_landmarks.landmark[158].y * frame.shape[0]),
-                (face_landmarks.landmark[133].x * frame.shape[1], face_landmarks.landmark[133].y * frame.shape[0]),
-                (face_landmarks.landmark[153].x * frame.shape[1], face_landmarks.landmark[153].y * frame.shape[0]),
-                (face_landmarks.landmark[144].x * frame.shape[1], face_landmarks.landmark[144].y * frame.shape[0])
+                (int(face_landmarks.landmark[33].x * frame.shape[1]), int(face_landmarks.landmark[33].y * frame.shape[0])),
+                (int(face_landmarks.landmark[160].x * frame.shape[1]), int(face_landmarks.landmark[160].y * frame.shape[0])),
+                (int(face_landmarks.landmark[158].x * frame.shape[1]), int(face_landmarks.landmark[158].y * frame.shape[0])),
+                (int(face_landmarks.landmark[133].x * frame.shape[1]), int(face_landmarks.landmark[133].y * frame.shape[0])),
+                (int(face_landmarks.landmark[153].x * frame.shape[1]), int(face_landmarks.landmark[153].y * frame.shape[0])),
+                (int(face_landmarks.landmark[144].x * frame.shape[1]), int(face_landmarks.landmark[144].y * frame.shape[0]))
             ]
             right_eye = [
-                (face_landmarks.landmark[362].x * frame.shape[1], face_landmarks.landmark[362].y * frame.shape[0]),
-                (face_landmarks.landmark[385].x * frame.shape[1], face_landmarks.landmark[385].y * frame.shape[0]),
-                (face_landmarks.landmark[387].x * frame.shape[1], face_landmarks.landmark[387].y * frame.shape[0]),
-                (face_landmarks.landmark[263].x * frame.shape[1], face_landmarks.landmark[263].y * frame.shape[0]),
-                (face_landmarks.landmark[373].x * frame.shape[1], face_landmarks.landmark[373].y * frame.shape[0]),
-                (face_landmarks.landmark[380].x * frame.shape[1], face_landmarks.landmark[380].y * frame.shape[0])
+                (int(face_landmarks.landmark[362].x * frame.shape[1]), int(face_landmarks.landmark[362].y * frame.shape[0])),
+                (int(face_landmarks.landmark[385].x * frame.shape[1]), int(face_landmarks.landmark[385].y * frame.shape[0])),
+                (int(face_landmarks.landmark[387].x * frame.shape[1]), int(face_landmarks.landmark[387].y * frame.shape[0])),
+                (int(face_landmarks.landmark[263].x * frame.shape[1]), int(face_landmarks.landmark[263].y * frame.shape[0])),
+                (int(face_landmarks.landmark[373].x * frame.shape[1]), int(face_landmarks.landmark[373].y * frame.shape[0])),
+                (int(face_landmarks.landmark[380].x * frame.shape[1]), int(face_landmarks.landmark[380].y * frame.shape[0]))
             ]
+
+            # Draw the left eye
+            cv2.polylines(frame, [np.array(left_eye, dtype=np.int32)], isClosed=True, color=(0, 0, 255), thickness=2)
+
+            # Draw the right eye
+            cv2.polylines(frame, [np.array(right_eye, dtype=np.int32)], isClosed=True, color=(0, 0, 255), thickness=2)
 
             leftEAR = eye_aspect_ratio(left_eye)
             rightEAR = eye_aspect_ratio(right_eye)
